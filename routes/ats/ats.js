@@ -39,7 +39,7 @@ let auth = function(req, res, next) {
 
 module.exports = function (app) {
     console.log("ATS Server v" + version + " started");
-    app.post("/ats/client/heartbeat", auth, function (req, res) { //main app
+    app.post("/ats/client/heartbeat", auth, function (req, res) { //client app
         let user = basicAuth(req);
         devices[devices[user.name].sender].activateAlarm = req.body.activateAlarm;
         devices[devices[user.name].sender].deactivateAlarm = req.body.deactivateAlarm;
@@ -47,7 +47,7 @@ module.exports = function (app) {
             alarmOn: devices[devices[user.name].sender].alarmOn,
         })
     });
-    app.post("/ats/sender/heartbeat", auth, function (req, res) { //main app
+    app.post("/ats/sender/heartbeat", auth, function (req, res) { //sender app
         let user = basicAuth(req);
         devices[user.name].alarmOn = req.body.alarmOn;
         res.json({
