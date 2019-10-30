@@ -1,5 +1,3 @@
-const mongoose = require("mongoose");
-const crypto = require("crypto");
 const basicAuth = require('basic-auth');
 
 const version = "1.0";
