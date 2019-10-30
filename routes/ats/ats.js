@@ -24,7 +24,6 @@ let devices = {
         deactivateAlarm: false
     }
 };
-let panic = false;
 
 let auth = function(req, res, next) {
     let user = basicAuth(req);
