@@ -11,8 +11,8 @@ let devices = {
         password: "passwd2",
         sender: "sender2"
     },
-    sender1: {
-        password: "passwd3",
+    "1593379": {
+        password: "843001",
         alarmActivated: 0,
         alarmDeactivated: 0
     },
@@ -37,19 +37,27 @@ let auth = function(req, res, next) {
 
 module.exports = function (app) {
     console.log("ATS Server v" + version + " started");
-    app.post("/ats/client/heartbeat", auth, function (req, res) { //client app
+    app.post("/ats/client", auth, function (req, res) { //client app
         let user = basicAuth(req);
-        devices[devices[user.name].sender].alarmActivated = req.body.alarmActivated;
-        devices[devices[user.name].sender].alarmDeactivated = req.body.alarmDeactivated;
+        if (req.body.alarmActivated) {
+            devices[user.name].alarmActivated = Date.now();
+        }
+        if (req.body.alarmDeactivated) {
+            devices[user.name].alarmDeactivated = Date.now();
+        }
         res.json({
             alarmActivated: devices[devices[user.name].sender].alarmActivated,
             alarmDeactivated: devices[devices[user.name].sender].alarmDeactivated
         })
     });
-    app.post("/ats/sender/heartbeat", auth, function (req, res) { //sender app
+    app.post("/ats/sender", auth, function (req, res) { //sender app
         let user = basicAuth(req);
-        devices[user.name].alarmActivated = req.body.alarmActivated;
-        devices[user.name].alarmDeactivated = req.body.alarmDeactivated;
+        if (req.body.alarmActivated) {
+            devices[user.name].alarmActivated = Date.now();
+        }
+        if (req.body.alarmDeactivated) {
+            devices[user.name].alarmDeactivated = Date.now();
+        }
         res.json({
             alarmActivated: devices[user.name].alarmActivated,
             alarmDeactivated: devices[user.name].alarmDeactivated
