@@ -2,6 +2,7 @@
   "name": "Server",
   "version": "1.0.0",
   "dependencies": {
+    "basic-auth": "^2.0.1",
     "body-parser": "latest"
   },
   "devDependencies": {

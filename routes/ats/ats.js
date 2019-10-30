@@ -13,15 +13,13 @@ let devices = {
     },
     sender1: {
         password: "passwd3",
-        alarmOn: false,
-        activateAlarm: false,
-        deactivateAlarm: false
+        alarmActivated: 0,
+        alarmDeactivated: 0
     },
     sender2: {
         password: "passwd4",
-        alarmOn: false,
-        activateAlarm: false,
-        deactivateAlarm: false
+        alarmActivated: 0,
+        alarmDeactivated: 0
     }
 };
 
@@ -41,18 +39,20 @@ module.exports = function (app) {
     console.log("ATS Server v" + version + " started");
     app.post("/ats/client/heartbeat", auth, function (req, res) { //client app
         let user = basicAuth(req);
-        devices[devices[user.name].sender].activateAlarm = req.body.activateAlarm;
-        devices[devices[user.name].sender].deactivateAlarm = req.body.deactivateAlarm;
+        devices[devices[user.name].sender].alarmActivated = req.body.alarmActivated;
+        devices[devices[user.name].sender].alarmDeactivated = req.body.alarmDeactivated;
         res.json({
-            alarmOn: devices[devices[user.name].sender].alarmOn,
+            alarmActivated: devices[devices[user.name].sender].alarmActivated,
+            alarmDeactivated: devices[devices[user.name].sender].alarmDeactivated
         })
     });
     app.post("/ats/sender/heartbeat", auth, function (req, res) { //sender app
         let user = basicAuth(req);
-        devices[user.name].alarmOn = req.body.alarmOn;
+        devices[user.name].alarmActivated = req.body.alarmActivated;
+        devices[user.name].alarmDeactivated = req.body.alarmDeactivated;
         res.json({
-            activateAlarm: devices[user.name].activateAlarm,
-            deactivateAlarm: devices[user.name].deactivateAlarm
+            alarmActivated: devices[user.name].alarmActivated,
+            alarmDeactivated: devices[user.name].alarmDeactivated
         })
     });
 };
