@@ -1,7 +1,6 @@
 const basicAuth = require('basic-auth');
 
 const version = "1.0";
-const delay = 15;
 
 let devices = {
     client1: {
