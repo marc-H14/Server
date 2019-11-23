@@ -1,11 +1,16 @@
+/*
+Anti-theft System Server v1.0
+©2019
+*/
+
 const basicAuth = require('basic-auth');
 
 const version = "1.0";
 
 let devices = {
-    client1: {
-        password: "passwd1",
-        sender: "sender1"
+    "abc": {
+        password: "abc",
+        sender: "1593379"
     },
     client2: {
         password: "passwd2",
@@ -14,12 +19,14 @@ let devices = {
     "1593379": {
         password: "843001",
         alarmActivated: 0,
-        alarmDeactivated: 0
+        alarmDeactivated: 0,
+        locked: false
     },
     sender2: {
         password: "passwd4",
         alarmActivated: 0,
-        alarmDeactivated: 0
+        alarmDeactivated: 0,
+        locked: false
     }
 };
 
@@ -28,7 +35,7 @@ let auth = function(req, res, next) {
     if (!user || !user.name || !user.pass) {
         res.set('WWW-Authenticate', 'Basic realm=Authorization Required');
         res.sendStatus(401);
-    } else if (!user.name in devices || user.pass === devices[user.name].password) {
+    } else if (!(user.name in devices) || (user.pass !== devices[user.name].password)) {
         res.sendStatus(403);
     } else {
         next();
@@ -40,14 +47,15 @@ module.exports = function (app) {
     app.post("/ats/client", auth, function (req, res) { //client app
         let user = basicAuth(req);
         if (req.body.alarmActivated) {
-            devices[user.name].alarmActivated = Date.now();
+            devices[devices[user.name].sender].alarmActivated = Date.now();
         }
         if (req.body.alarmDeactivated) {
-            devices[user.name].alarmDeactivated = Date.now();
+            devices[devices[user.name].sender].alarmDeactivated = Date.now();
         }
         res.json({
             alarmActivated: devices[devices[user.name].sender].alarmActivated,
-            alarmDeactivated: devices[devices[user.name].sender].alarmDeactivated
+            alarmDeactivated: devices[devices[user.name].sender].alarmDeactivated,
+            locked: devices[devices[user.name].sender].locked
         })
     });
     app.post("/ats/sender", auth, function (req, res) { //sender app
@@ -58,6 +66,7 @@ module.exports = function (app) {
         if (req.body.alarmDeactivated) {
             devices[user.name].alarmDeactivated = Date.now();
         }
+        devices[user.name].locked = req.body.locked;
         res.json({
             alarmActivated: devices[user.name].alarmActivated,
             alarmDeactivated: devices[user.name].alarmDeactivated
